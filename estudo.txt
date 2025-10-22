@@ -1,0 +1,34 @@
+eslint.config.js:
+	- Carrega as regras recomendadas do ESLint para JS, TS, **React Hooks e o fast-refresh do Vite. Declara os globais de navegador e ignora a pasta dist/
+
+interface/package-lock.json:
+	- É um **lockfile "vazio" gerado na pasta interface/
+
+tsconfig.json
+	- Apenas referencia os dois configs dependentes tsconfig.app.json e tsconfig.node.json, permitindo builds incrementais pelo TS
+
+tsconfig.app.json
+	- Define as opções do compilador para o código que roda no navegador
+
+tsconfig.node.json
+	- Configura de modo semelhante os arquivos restritos o Node
+
+vite.config.ts
+	- Carrega variáveis de ambiente, ativa o plugin React SWC e configura uma proxy
+
+** React Hoock
+ - Funções iniciadas por se que deixam componentes funcionais "falarem" com o motor do React
+	- Exemplo: useState: Guarda e atualiza valores
+	- Exemplo: useEffect: Roda efeitos olaterais uando props/estado mudam
+
+** Lockfile
+	- Registo exato das versões que realmente foram instalados para que todos os ambientes façam o build com o mesmo conjunto
+
+### src/
+
+-- components/
+a prop end no li inicio no navbar serve para o React Router marcar a rota / como ativa somente se a URL for exatamente igual a /
+
+pages/
+
+		   
