@@ -1,39 +1,15 @@
-import { useEffect, useState } from 'react'
-import { fetchJson } from '../services/api'
 import type { Aluno } from '../types'
+import { useRecuperarAlunos } from '../hooks/useRecuperarAlunos'
 
 export function AlunosPage() {
-  const [alunos, setAlunos] = useState<Aluno[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+  } = useRecuperarAlunos()
 
-  useEffect(() => {
-    let isMounted = true
-    fetchJson<Aluno[]>('/alunos')
-      .then((dados) => {
-        if (isMounted) {
-          setAlunos(dados)
-          setError(null)
-        }
-      })
-      .catch((err: unknown) => {
-        if (isMounted) {
-          const message =
-            err instanceof Error ? err.message : 'Erro ao carregar alunos'
-          setError(message)
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setLoading(false)
-        }
-      })
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (loading) {
+  if (isPending) {
     return (
       <div className="d-flex justify-content-center py-5">
         <div className="spinner-border text-primary" role="status" />
@@ -41,13 +17,17 @@ export function AlunosPage() {
     )
   }
 
-  if (error) {
+  if (isError) {
+    const mensagem =
+      error instanceof Error ? error.message : 'Erro ao carregar alunos'
     return (
       <div className="alert alert-danger" role="alert">
-        {error}
+        {mensagem}
       </div>
     )
   }
+
+  const alunos: Aluno[] = data ?? []
 
   if (alunos.length === 0) {
     return (

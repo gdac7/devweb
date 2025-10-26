@@ -1,38 +1,27 @@
-import { useEffect, useState } from 'react'
-import { fetchJson } from '../services/api'
+import { useQuery } from '@tanstack/react-query'
+import { API_BASE_URL } from '../services/api'
 import type { Turma } from '../types'
 
-type EstadoCarregamento = 'inicial' | 'carregando' | 'ok' | 'erro'
+const buscarTurmas = async (termo: string): Promise<Turma[]> => {
+  const response = await fetch(
+    `${API_BASE_URL}/turmas/buscar?q=${encodeURIComponent(termo)}`,
+  )
+
+  if (!response.ok) {
+    const mensagem = await response.text()
+    throw new Error(mensagem || 'Falha ao pesquisar turmas')
+  }
+
+  return await response.json()
+}
 
 export function useBuscarTurmas(termo: string) {
-  const [estado, setEstado] = useState<EstadoCarregamento>('inicial')
-  const [turmas, setTurmas] = useState<Turma[]>([])
-  const [mensagemErro, setMensagemErro] = useState<string | null>(null)
+  const termoNormalizado = termo.trim()
 
-  useEffect(() => {
-    const termoNormalizado = termo.trim()
-    if (!termoNormalizado) {
-      setEstado('inicial')
-      setTurmas([])
-      setMensagemErro(null)
-      return
-    }
-
-    setEstado('carregando')
-    fetchJson<Turma[]>(`/turmas/buscar?q=${encodeURIComponent(termoNormalizado)}`)
-      .then((dados) => {
-        setTurmas(dados)
-        setEstado('ok')
-        setMensagemErro(null)
-      })
-      .catch((erro: unknown) => {
-        setEstado('erro')
-        setTurmas([])
-        setMensagemErro(
-          erro instanceof Error ? erro.message : 'Falha ao pesquisar turmas',
-        )
-      })
-  }, [termo])
-
-  return { estado, turmas, mensagemErro }
+  return useQuery({
+    queryKey: ['turmas', 'busca', termoNormalizado],
+    queryFn: () => buscarTurmas(termoNormalizado),
+    enabled: termoNormalizado.length > 0,
+    staleTime: 5_000,
+  })
 }

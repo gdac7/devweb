@@ -12,19 +12,58 @@ export function TurmaBuscaPage() {
   const [pesquisa, setPesquisa] = useState('')
   const termoDebounce = useValorDebounce(pesquisa)
 
+  const termoNormalizado = termoDebounce.trim()
+
   const {
-    estado: estadoTurmas,
-    turmas,
-    mensagemErro: mensagemErroTurmas,
+    data: turmasEncontradas,
+    isPending: carregandoTurmas,
+    isError: erroAoBuscarTurmas,
+    error: erroBuscarTurmas,
   } = useBuscarTurmas(termoDebounce)
 
   const [turmaSelecionadaId, setTurmaSelecionadaId] = useState<number | null>(null)
 
   const {
-    estado: estadoTurma,
-    turma,
-    mensagemErro: mensagemErroTurma,
+    data: detalhesDaTurma,
+    isPending: carregandoDetalhes,
+    isError: erroAoBuscarDetalhes,
+    error: erroBuscarDetalhes,
   } = useBuscarTurmaPorId(turmaSelecionadaId)
+
+  const mensagemErroTurmas =
+    erroAoBuscarTurmas && erroBuscarTurmas instanceof Error
+      ? erroBuscarTurmas.message
+      : erroAoBuscarTurmas
+        ? 'Falha ao pesquisar turmas'
+        : null
+
+  const mensagemErroTurma =
+    erroAoBuscarDetalhes && erroBuscarDetalhes instanceof Error
+      ? erroBuscarDetalhes.message
+      : erroAoBuscarDetalhes
+        ? 'Falha ao carregar detalhes da turma'
+        : null
+
+  const estadoTurmas: 'inicial' | 'carregando' | 'ok' | 'erro' =
+    termoNormalizado.length === 0
+      ? 'inicial'
+      : carregandoTurmas
+        ? 'carregando'
+        : erroAoBuscarTurmas
+          ? 'erro'
+          : 'ok'
+
+  const estadoTurma: 'inicial' | 'carregando' | 'ok' | 'erro' =
+    turmaSelecionadaId == null
+      ? 'inicial'
+      : carregandoDetalhes
+        ? 'carregando'
+        : erroAoBuscarDetalhes
+          ? 'erro'
+          : 'ok'
+
+  const turmas = estadoTurmas === 'ok' ? turmasEncontradas ?? [] : []
+  const turma = estadoTurma === 'ok' ? detalhesDaTurma ?? null : null
 
   const [pagina, setPagina] = useState(1)
 

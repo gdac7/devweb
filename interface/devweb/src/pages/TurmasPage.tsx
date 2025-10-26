@@ -1,40 +1,16 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { fetchJson } from '../services/api'
 import type { Turma } from '../types'
+import { useRecuperarTurmas } from '../hooks/useRecuperarTurmas'
 
 export function TurmasPage() {
-  const [turmas, setTurmas] = useState<Turma[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+  } = useRecuperarTurmas()
 
-  useEffect(() => {
-    let isMounted = true
-    fetchJson<Turma[]>('/turmas')
-      .then((dados) => {
-        if (isMounted) {
-          setTurmas(dados)
-          setError(null)
-        }
-      })
-      .catch((err: unknown) => {
-        if (isMounted) {
-          const message =
-            err instanceof Error ? err.message : 'Erro ao carregar turmas'
-          setError(message)
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setLoading(false)
-        }
-      })
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (loading) {
+  if (isPending) {
     return (
       <div className="d-flex justify-content-center py-5">
         <div className="spinner-border text-primary" role="status" />
@@ -42,13 +18,17 @@ export function TurmasPage() {
     )
   }
 
-  if (error) {
+  if (isError) {
+    const mensagem =
+      error instanceof Error ? error.message : 'Erro ao carregar turmas'
     return (
       <div className="alert alert-danger" role="alert">
-        {error}
+        {mensagem}
       </div>
     )
   }
+
+  const turmas: Turma[] = data ?? []
 
   if (turmas.length === 0) {
     return (

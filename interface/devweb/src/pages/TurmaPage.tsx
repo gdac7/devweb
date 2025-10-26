@@ -1,47 +1,22 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchJson } from '../services/api'
 import type { Aluno, Turma } from '../types'
+import { useBuscarTurmaPorId } from '../hooks/useBuscarTurmaPorId'
 
 export function TurmaPage() {
   const { id } = useParams<{ id: string }>()
-  const [turma, setTurma] = useState<Turma | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const turmaId = id ? Number(id) : null
+  const isTurmaIdValido = turmaId != null && !Number.isNaN(turmaId)
 
-  useEffect(() => {
-    if (!id) {
-      setError('Turma não encontrada')
-      setLoading(false)
-      return
-    }
-    let isMounted = true
-    fetchJson<Turma>(`/turmas/${id}`)
-      .then((dados) => {
-        if (isMounted) {
-          setTurma(dados)
-          setError(null)
-        }
-      })
-      .catch((err: unknown) => {
-        if (isMounted) {
-          const message =
-            err instanceof Error ? err.message : 'Erro ao carregar turma'
-          setError(message)
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setLoading(false)
-        }
-      })
-    return () => {
-      isMounted = false
-    }
-  }, [id])
+  const {
+    data: turma,
+    isPending,
+    isError,
+    error,
+  } = useBuscarTurmaPorId(isTurmaIdValido ? turmaId : null)
 
   const alunosInscritos = useMemo(() => {
-    if (!turma || !turma.inscricoes) {
+    if (!turma?.inscricoes) {
       return []
     }
     const mapa = new Map<number, Aluno>()
@@ -55,7 +30,15 @@ export function TurmaPage() {
     )
   }, [turma])
 
-  if (loading) {
+  if (!isTurmaIdValido) {
+    return (
+      <div className="alert alert-warning" role="alert">
+        Turma não encontrada.
+      </div>
+    )
+  }
+
+  if (isPending) {
     return (
       <div className="d-flex justify-content-center py-5">
         <div className="spinner-border text-primary" role="status" />
@@ -63,10 +46,12 @@ export function TurmaPage() {
     )
   }
 
-  if (error) {
+  if (isError) {
+    const mensagem =
+      error instanceof Error ? error.message : 'Erro ao carregar turma'
     return (
       <div className="alert alert-danger" role="alert">
-        {error}
+        {mensagem}
       </div>
     )
   }
