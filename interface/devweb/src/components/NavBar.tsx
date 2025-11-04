@@ -6,7 +6,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function NavBar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm py-3">
       <div className="container">
           <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
             <i className="bi bi-card-list" />
@@ -35,6 +35,12 @@ export function NavBar() {
                 <NavLink to="/alunos" className={linkClass}>
                   <i className="bi bi-people me-2" />
                   Alunos
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/alunos/grupo" className={linkClass}>
+                  <i className="bi bi-people me-2" />
+                  Alunos por Turma
                 </NavLink>
               </li>
               <li className="nav-item">

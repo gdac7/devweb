@@ -59,6 +59,9 @@ export function TurmasPage() {
                   <h3 className="h5">
                     Turma {turma.ano} - {turma.periodo}
                   </h3>
+                  <p className="mb-2">
+                    Código: <span className="fw-semibold">{turma.codigo}</span>
+                  </p>
                   <p className="text-muted mb-2">
                     {turma.disciplina?.nome ?? 'Disciplina não informada'}
                   </p>

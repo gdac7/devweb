@@ -19,9 +19,11 @@ public class AlunoService {
     public List<Aluno> recuperarAlunos(){
         return alunoRepository.findAll();
     }
+
     public Aluno cadastrarAluno(Aluno aluno){
         return alunoRepository.save(aluno);
     }
+
     public Aluno recuperarAluno(Long id){
         return alunoRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(
@@ -39,6 +41,10 @@ public class AlunoService {
 
     public void removerAlunoPorId(Long id){
         alunoRepository.deleteById(id);
+    }
+
+    public List<Aluno> recuperarAlunosPorTurma(Long turmaId){
+        return alunoRepository.recuperarAlunosPorTurma(turmaId);
     }
 
 

@@ -201,6 +201,7 @@ public class Trabalho02Application implements CommandLineRunner {
 //        insc8.setTurma(turmaB002);
 //        insc8.setDataHora(agora.minusDays(2));
 //        turmaB002.addInscricao(insc8);
+
 //
 //        inscricaoRepository.saveAll(List.of(
 //                insc1, insc2, insc3, insc4, insc5, insc6, insc7, insc8
