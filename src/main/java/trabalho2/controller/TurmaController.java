@@ -27,7 +27,10 @@ public class TurmaController {
     }
 
     @GetMapping
-    public List<Turma> recuperarTurmas() {
+    public List<Turma> recuperarTurmas(@RequestParam(value = "disciplinaId", required = false) Long disciplinaId) {
+        if (disciplinaId != null) {
+            return turmaService.recuperarTurmasPorDisciplina(disciplinaId);
+        }
         return turmaService.recuperarTurmas();
     }
 

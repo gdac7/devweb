@@ -42,4 +42,8 @@ public class TurmaService {
         return turmaRepository.findByCodigoContainingIgnoreCaseOrderByCodigoAsc(codigo.trim());
 
     }
+
+    public List<Turma> recuperarTurmasPorDisciplina(Long disciplinaId) {
+        return turmaRepository.findByDisciplinaIdOrderByCodigoAsc(disciplinaId);
+    }
 }

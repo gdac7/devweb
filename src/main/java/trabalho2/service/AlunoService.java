@@ -47,5 +47,8 @@ public class AlunoService {
         return alunoRepository.recuperarAlunosPorTurma(turmaId);
     }
 
+    public List<Aluno> recuperarAlunosNaoInscritosNaTurma(Long turmaId){
+        return alunoRepository.recuperarAlunosNaoInscritosNaTurma(turmaId);
+    }
 
 }

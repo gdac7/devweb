@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface TurmaRepository extends JpaRepository<Turma, Long> {
     List<Turma> findByCodigoContainingIgnoreCaseOrderByCodigoAsc(String codigo);
+
+    List<Turma> findByDisciplinaIdOrderByCodigoAsc(Long disciplinaId);
 }

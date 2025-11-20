@@ -10,6 +10,9 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("select a from Aluno a where a.nome = :nome")
     Optional<Aluno> recuperarAlunoPorNome(@Param("nome") String nome);
 
-    @Query("select distinct i.aluno from Inscricao i where i.turma.id = :turmaId order by i.aluno.nome asc")
+    @Query("select i.aluno from Inscricao i where i.turma.id = :turmaId order by i.id desc")
     List<Aluno> recuperarAlunosPorTurma(@Param("turmaId") Long turmaId);
+
+    @Query("select a from Aluno a where a.id not in (select i.aluno.id from Inscricao i where i.turma.id = :turmaId) order by a.nome asc")
+    List<Aluno> recuperarAlunosNaoInscritosNaTurma(@Param("turmaId") Long turmaId);
 }

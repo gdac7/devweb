@@ -45,6 +45,11 @@ public class AlunoController {
         return aluno.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/nao-inscritos")
+    public List<Aluno> recuperarAlunosNaoInscritosNaTurma(@RequestParam("turmaId") Long turmaId) {
+        return alunoService.recuperarAlunosNaoInscritosNaTurma(turmaId);
+    }
+
     @DeleteMapping("{idAluno}")
     public ResponseEntity<Void> removerAlunoPorId(@PathVariable("idAluno") Long id) {
         alunoService.removerAlunoPorId(id);

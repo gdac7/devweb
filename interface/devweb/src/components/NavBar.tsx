@@ -38,6 +38,18 @@ export function NavBar() {
                 </NavLink>
               </li>
               <li className="nav-item">
+                <NavLink to="/cadastrar-aluno" className={linkClass}>
+                  <i className="bi bi-person-plus me-2" />
+                  Cadastrar Aluno
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/inscricao-alunos" className={linkClass}>
+                  <i className="bi bi-pencil-square me-2" />
+                  Inscrição de Alunos
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink to="/alunos/grupo" className={linkClass}>
                   <i className="bi bi-people me-2" />
                   Alunos por Turma
