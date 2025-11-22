@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,8 +18,8 @@ type FormAluno = z.infer<typeof schema>
 const AlunoForm = () => {
   const setMensagem = useAlunoStore((s) => s.setMensagem)
   const alunoSelecionado = useAlunoStore((s) => s.alunoSelecionado)
+  const setAlunoSelecionado = useAlunoStore((s) => s.setAlunoSelecionado)
 
-  const navigate = useNavigate()
   const { mutate: cadastrarAluno, error: errorCadastrarAluno } = useCadastrarAluno()
   const { mutate: alterarAluno, error: errorAlterarAluno } = useAlterarAluno()
 
@@ -56,16 +55,17 @@ const AlunoForm = () => {
       }
       alterarAluno(aluno, {
         onSuccess: (alunoAlterado: Aluno) => {
-          setMensagem('Aluno alterado com sucesso!')
-          navigate('/alunos/' + alunoAlterado.id)
+          setMensagem(`Aluno ${alunoAlterado.nome} alterado com sucesso!`)
+          setAlunoSelecionado({} as Aluno)
+          reset()
         },
       })
     } else {
       const aluno = { nome, email, cpf }
       cadastrarAluno(aluno, {
         onSuccess: (alunoCadastrado: Aluno) => {
-          setMensagem('Aluno cadastrado com sucesso!')
-          navigate('/alunos/' + alunoCadastrado.id)
+          setMensagem(`Aluno ${alunoCadastrado.nome} cadastrado com sucesso!`)
+          reset()
         },
       })
     }

@@ -1,6 +1,10 @@
 import AlunoForm from '../components/AlunoForm'
+import BuscarAlterarAluno from '../components/BuscarAlterarAluno'
+import useAlunoStore from '../store/AlunoStore'
 
 const CadastroDeAlunosPage = () => {
+  const mensagem = useAlunoStore((s) => s.mensagem)
+
   return (
     <>
       <div className="mb-4">
@@ -8,7 +12,15 @@ const CadastroDeAlunosPage = () => {
         <hr className="mt-1" />
       </div>
 
+      {mensagem && (
+        <div className="alert alert-success alert-dismissible fade show" role="alert">
+          {mensagem}
+        </div>
+      )}
+
       <AlunoForm />
+
+      <BuscarAlterarAluno />
     </>
   )
 }

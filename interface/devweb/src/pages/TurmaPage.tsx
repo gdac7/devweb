@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import type { Aluno, Turma } from '../types'
+import type { Aluno } from '../types'
 import { useBuscarTurmaPorId } from '../hooks/useBuscarTurmaPorId'
 
 export function TurmaPage() {
