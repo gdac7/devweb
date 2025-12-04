@@ -1,27 +1,30 @@
 import { useMutation } from '@tanstack/react-query'
-import { API_BASE_URL } from '../services/api'
+import { URL_BASE } from '../util/constants'
 import type { Inscricao } from '../types'
 import { queryClient } from '../main'
+import useFetchWithAuth from './useFetchWithAuth'
 
 interface InscreverAlunoParams {
   turmaId: number
   alunoId: number
 }
 
-const inscreverAluno = async ({ turmaId, alunoId }: InscreverAlunoParams): Promise<Inscricao> => {
-  const response = await fetch(`${API_BASE_URL}/turmas/${turmaId}/inscricoes?idAluno=${alunoId}`, {
-    method: 'POST',
-  })
+const useInscreverAluno = () => {
+  const { fetchWithAuth } = useFetchWithAuth()
 
-  if (!response.ok) {
-    const mensagem = await response.text()
-    throw new Error(mensagem || 'Erro ao inscrever aluno')
+  const inscreverAluno = async ({ turmaId, alunoId }: InscreverAlunoParams): Promise<Inscricao> => {
+    const response = await fetchWithAuth(`${URL_BASE}/turmas/${turmaId}/inscricoes?idAluno=${alunoId}`, {
+      method: 'POST',
+    })
+
+    if (!response.ok) {
+      const mensagem = await response.text()
+      throw new Error(mensagem || 'Erro ao inscrever aluno')
+    }
+
+    return await response.json()
   }
 
-  return await response.json()
-}
-
-const useInscreverAluno = () => {
   return useMutation({
     mutationFn: (params: InscreverAlunoParams) => inscreverAluno(params),
     onSuccess: (_, variables) => {

@@ -1,26 +1,29 @@
 import { useMutation } from '@tanstack/react-query'
-import { API_BASE_URL } from '../services/api'
+import { URL_BASE, URL_ALUNOS } from '../util/constants'
 import type { Aluno } from '../types'
 import { queryClient } from '../main'
-
-const cadastrarAluno = async (aluno: Omit<Aluno, 'id'>): Promise<Aluno> => {
-  const response = await fetch(`${API_BASE_URL}/alunos`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(aluno),
-  })
-
-  if (!response.ok) {
-    const mensagem = await response.text()
-    throw new Error(mensagem || 'Erro ao cadastrar aluno')
-  }
-
-  return await response.json()
-}
+import useFetchWithAuth from './useFetchWithAuth'
 
 const useCadastrarAluno = () => {
+  const { fetchWithAuth } = useFetchWithAuth()
+
+  const cadastrarAluno = async (aluno: Omit<Aluno, 'id'>): Promise<Aluno> => {
+    const response = await fetchWithAuth(`${URL_BASE}${URL_ALUNOS}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(aluno),
+    })
+
+    if (!response.ok) {
+      const mensagem = await response.text()
+      throw new Error(mensagem || 'Erro ao cadastrar aluno')
+    }
+
+    return await response.json()
+  }
+
   return useMutation({
     mutationFn: (aluno: Omit<Aluno, 'id'>) => cadastrarAluno(aluno),
     onSuccess: () => {

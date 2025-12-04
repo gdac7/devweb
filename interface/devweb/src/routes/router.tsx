@@ -9,20 +9,36 @@ import { AlunosPorTurmaPage } from '../pages/AlunosPorTurmaPage'
 import CadastroDeAlunosPage from '../pages/CadastroDeAlunosPage'
 import AlunoPage from '../pages/AlunoPage'
 import InscricaoDeAlunosPage from '../pages/InscricaoDeAlunosPage'
+import LoginPage from '../pages/LoginPage'
+import CadastroUsuarioPage from '../pages/CadastroUsuarioPage'
+import ProtectedRoute from './ProtectedRoute'
+import AdminRoute from './AdminRoute'
 
 export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       { path: '/', element: <HomePage /> },
-      { path: '/alunos', element: <AlunosPage /> },
-      { path: '/alunos/:id', element: <AlunoPage /> },
-      { path: '/alunos/grupo', element: <AlunosPorTurmaPage /> },
-      { path: '/cadastrar-aluno', element: <CadastroDeAlunosPage /> },
-      { path: '/inscricao-alunos', element: <InscricaoDeAlunosPage /> },
-      { path: '/turmas', element: <TurmasPage /> },
-      { path: '/turmas/:id', element: <TurmaPage /> },
-      { path: '/turmas/pesquisa', element: <TurmaBuscaPage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/cadastro', element: <CadastroUsuarioPage /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: '/alunos', element: <AlunosPage /> },
+          { path: '/alunos/:id', element: <AlunoPage /> },
+          { path: '/alunos/grupo', element: <AlunosPorTurmaPage /> },
+          { path: '/inscricao-alunos', element: <InscricaoDeAlunosPage /> },
+          { path: '/turmas', element: <TurmasPage /> },
+          { path: '/turmas/:id', element: <TurmaPage /> },
+          { path: '/turmas/pesquisa', element: <TurmaBuscaPage /> },
+          {
+            element: <AdminRoute />,
+            children: [
+              { path: '/cadastrar-aluno', element: <CadastroDeAlunosPage /> },
+            ],
+          },
+        ],
+      },
     ],
   },
 ])

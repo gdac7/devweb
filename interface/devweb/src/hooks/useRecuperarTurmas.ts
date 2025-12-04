@@ -1,19 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
-import { API_BASE_URL } from '../services/api'
+import { URL_BASE } from '../util/constants'
 import type { Turma } from '../types'
-
-const recuperarTurmas = async (): Promise<Turma[]> => {
-  const response = await fetch(`${API_BASE_URL}/turmas`)
-
-  if (!response.ok) {
-    const mensagem = await response.text()
-    throw new Error(mensagem || 'Erro ao carregar turmas')
-  }
-
-  return await response.json()
-}
+import useFetchWithAuth from './useFetchWithAuth'
 
 export function useRecuperarTurmas() {
+  const { fetchWithAuth } = useFetchWithAuth()
+
+  const recuperarTurmas = async (): Promise<Turma[]> => {
+    const response = await fetchWithAuth(`${URL_BASE}/turmas`)
+
+    if (!response.ok) {
+      const mensagem = await response.text()
+      throw new Error(mensagem || 'Erro ao carregar turmas')
+    }
+
+    return await response.json()
+  }
+
   return useQuery({
     queryKey: ['turmas', 'lista'],
     queryFn: recuperarTurmas,

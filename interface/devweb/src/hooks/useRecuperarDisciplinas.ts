@@ -1,19 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
-import { API_BASE_URL } from '../services/api'
+import { URL_BASE } from '../util/constants'
 import type { Disciplina } from '../types'
-
-const recuperarDisciplinas = async (): Promise<Disciplina[]> => {
-  const response = await fetch(`${API_BASE_URL}/disciplinas`)
-
-  if (!response.ok) {
-    const mensagem = await response.text()
-    throw new Error(mensagem || 'Erro ao carregar disciplinas')
-  }
-
-  return await response.json()
-}
+import useFetchWithAuth from './useFetchWithAuth'
 
 export function useRecuperarDisciplinas() {
+  const { fetchWithAuth } = useFetchWithAuth()
+
+  const recuperarDisciplinas = async (): Promise<Disciplina[]> => {
+    const response = await fetchWithAuth(`${URL_BASE}/disciplinas`)
+
+    if (!response.ok) {
+      const mensagem = await response.text()
+      throw new Error(mensagem || 'Erro ao carregar disciplinas')
+    }
+
+    return await response.json()
+  }
+
   return useQuery({
     queryKey: ['disciplinas', 'lista'],
     queryFn: recuperarDisciplinas,

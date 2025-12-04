@@ -1,6 +1,8 @@
 package trabalho2.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import trabalho2.repository.InscricaoRepository;
 
 import java.util.ArrayList;
@@ -12,8 +14,15 @@ public class Aluno {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
+
+    @NotEmpty(message = "O nome deve ser informado.")
     private String nome;
+
+    @NotEmpty(message = "O email deve ser informado.")
+    @Email(message = "Email inválido.")
     private String email;
+
+    @NotEmpty(message = "O CPF deve ser informado.")
     private String cpf;
     @JsonIgnore
     @OneToMany(mappedBy = "aluno")

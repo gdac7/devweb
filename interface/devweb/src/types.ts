@@ -32,3 +32,29 @@ export type Turma = {
   disciplina: Disciplina
   inscricoes: Inscricao[]
 }
+
+export type UsuarioLogin = {
+  email: string
+  senha: string
+}
+
+export type Usuario = {
+  id?: number
+  nome: string
+  email: string
+  senha: string
+  role?: string
+}
+
+export type InfoUsuario = {
+  valido: boolean
+  duplicado: boolean
+  mensagem: string
+}
+
+export type ResultadoPaginado<T> = {
+  items: T[]
+  totalItems: number
+  totalPages: number
+  currentPage: number
+}

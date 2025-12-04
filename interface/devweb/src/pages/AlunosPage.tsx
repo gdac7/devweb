@@ -1,5 +1,8 @@
 import type { Aluno } from '../types'
 import { useRecuperarAlunos } from '../hooks/useRecuperarAlunos'
+import useRemoverAluno from '../hooks/useRemoverAluno'
+import useErrorStore from '../store/ErrorStore'
+import { ErrorAlert } from '../components/ErrorAlert'
 
 export function AlunosPage() {
   const {
@@ -8,6 +11,22 @@ export function AlunosPage() {
     isError,
     error,
   } = useRecuperarAlunos()
+
+  const { mutate: removerAluno, isPending: isRemovendoAluno } = useRemoverAluno()
+  const setErrorMessage = useErrorStore((s) => s.setErrorMessage)
+  const clearError = useErrorStore((s) => s.clearError)
+
+  const handleRemover = (aluno: Aluno) => {
+    if (confirm(`Tem certeza que deseja remover ${aluno.nome}?`)) {
+      clearError()
+      removerAluno(aluno.id, {
+        onError: (error) => {
+          const mensagem = error instanceof Error ? error.message : 'Erro ao remover aluno'
+          setErrorMessage(mensagem)
+        },
+      })
+    }
+  }
 
   if (isPending) {
     return (
@@ -48,12 +67,14 @@ export function AlunosPage() {
           Total: {alunos.length}
         </span>
       </div>
+      <ErrorAlert />
       <div className="table-responsive">
         <table className="table table-striped table-hover align-middle">
           <thead>
             <tr>
               <th scope="col">Nome</th>
               <th scope="col">Email</th>
+              <th scope="col" className="text-center">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -61,6 +82,16 @@ export function AlunosPage() {
               <tr key={aluno.id}>
                 <td>{aluno.nome}</td>
                 <td>{aluno.email}</td>
+                <td className="text-center">
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleRemover(aluno)}
+                    disabled={isRemovendoAluno}
+                  >
+                    <i className="bi bi-trash" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

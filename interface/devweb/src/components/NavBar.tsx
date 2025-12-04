@@ -1,10 +1,23 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
+import useTokenStore from '../store/TokenStore'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'nav-link active fw-semibold' : 'nav-link'
 
 export function NavBar() {
+  const tokenResponse = useTokenStore((s) => s.tokenResponse)
+  const setTokenResponse = useTokenStore((s) => s.setTokenResponse)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    setTokenResponse({ token: "", idUsuario: 0, nome: "", role: "" })
+    navigate("/login")
+  }
+
+  const isAuthenticated = tokenResponse.token !== ""
+  const isAdmin = tokenResponse.role === "ADMIN"
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm py-3">
       <div className="container">
@@ -37,12 +50,14 @@ export function NavBar() {
                   Alunos
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink to="/cadastrar-aluno" className={linkClass}>
-                  <i className="bi bi-person-plus me-2" />
-                  Cadastrar Aluno
-                </NavLink>
-              </li>
+              {isAdmin && (
+                <li className="nav-item">
+                  <NavLink to="/cadastrar-aluno" className={linkClass}>
+                    <i className="bi bi-person-plus me-2" />
+                    Cadastrar Aluno
+                  </NavLink>
+                </li>
+              )}
               <li className="nav-item">
                 <NavLink to="/inscricao-alunos" className={linkClass}>
                   <i className="bi bi-pencil-square me-2" />
@@ -67,6 +82,30 @@ export function NavBar() {
                   Pesquisa de Turmas
                 </NavLink>
               </li>
+
+              {isAuthenticated ? (
+                <>
+                  <li className="nav-item">
+                    <span className="nav-link text-light">
+                      <i className="bi bi-person-circle me-2" />
+                      {tokenResponse.nome}
+                    </span>
+                  </li>
+                  <li className="nav-item">
+                    <button onClick={handleLogout} className="nav-link btn btn-link text-danger">
+                      <i className="bi bi-box-arrow-right me-2" />
+                      Sair
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <li className="nav-item">
+                  <NavLink to="/login" className={linkClass}>
+                    <i className="bi bi-box-arrow-in-right me-2" />
+                    Login
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </div>
       </div>

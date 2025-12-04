@@ -3,18 +3,26 @@ import TurmaComboBox from './TurmaComboBox'
 import AlunoComboBox from './AlunoComboBox'
 import useInscricaoStore from '../store/InscricaoStore'
 import useInscreverAluno from '../hooks/useInscreverAluno'
+import useErrorStore from '../store/ErrorStore'
+import { ErrorAlert } from './ErrorAlert'
 
 const InscricaoForm = () => {
   const turmaId = useInscricaoStore((s) => s.turmaId)
   const alunoId = useInscricaoStore((s) => s.alunoId)
+  const setErrorMessage = useErrorStore((s) => s.setErrorMessage)
+  const clearError = useErrorStore((s) => s.clearError)
 
-  const { mutate: inscreverAluno, error } = useInscreverAluno()
-
-  if (error) throw error
+  const { mutate: inscreverAluno } = useInscreverAluno()
 
   const handleInscrever = () => {
     if (turmaId && alunoId) {
-      inscreverAluno({ turmaId, alunoId })
+      clearError()
+      inscreverAluno({ turmaId, alunoId }, {
+        onError: (error) => {
+          const mensagem = error instanceof Error ? error.message : 'Erro ao inscrever aluno'
+          setErrorMessage(mensagem)
+        },
+      })
     }
   }
 
@@ -24,6 +32,8 @@ const InscricaoForm = () => {
         <h5>Inscrição de Aluno em Turma</h5>
         <hr className="mt-1" />
       </div>
+
+      <ErrorAlert />
 
       <div className="row mb-3">
         <div className="col-md-4">

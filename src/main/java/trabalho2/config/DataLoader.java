@@ -4,6 +4,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import trabalho2.auth.model.Usuario;
+import trabalho2.auth.repository.UsuarioRepository;
+import trabalho2.auth.util.Role;
 import trabalho2.model.*;
 import trabalho2.repository.*;
 
@@ -21,9 +25,24 @@ public class DataLoader {
             ProfessorRepository professorRepository,
             TurmaRepository turmaRepository,
             InscricaoRepository inscricaoRepository,
-            DisciplinaRepository disciplinaRepository
+            DisciplinaRepository disciplinaRepository,
+            UsuarioRepository usuarioRepository,
+            PasswordEncoder passwordEncoder
     ) {
         return args -> {
+            Usuario admin = new Usuario();
+            admin.setNome("Administrador");
+            admin.setEmail("admin@universidade.br");
+            admin.setSenha(passwordEncoder.encode("admin123"));
+            admin.setRole(Role.ADMIN);
+
+            Usuario user = new Usuario();
+            user.setNome("Usuario Comum");
+            user.setEmail("user@universidade.br");
+            user.setSenha(passwordEncoder.encode("user123"));
+            user.setRole(Role.USER);
+
+            usuarioRepository.saveAll(List.of(admin, user));
             // professores
             Professor profLuis = new Professor();
             profLuis.setNome("Luis Albuquerque");

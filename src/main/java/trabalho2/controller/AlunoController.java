@@ -1,5 +1,6 @@
 package trabalho2.controller;
 
+import jakarta.validation.Valid;
 import trabalho2.model.Aluno;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,12 @@ public class AlunoController {
     }
 
     @PostMapping
-    public Aluno cadastrarAluno(@RequestBody Aluno aluno) {
+    public Aluno cadastrarAluno(@RequestBody @Valid Aluno aluno) {
         return alunoService.cadastrarAluno(aluno);
     }
 
     @PutMapping
-    public Aluno alterarAluno(@RequestBody Aluno aluno) {
+    public Aluno alterarAluno(@RequestBody @Valid Aluno aluno) {
         return alunoService.alterarAluno(aluno);
     }
 

@@ -40,6 +40,15 @@ public class AlunoService {
     }
 
     public void removerAlunoPorId(Long id){
+        Aluno aluno = this.recuperarAluno(id);
+
+        if (aluno.getInscricoes() != null && !aluno.getInscricoes().isEmpty()) {
+            throw new RuntimeException(
+                "Não é possível remover aluno com inscrições em turmas. " +
+                "Remova as inscrições primeiro."
+            );
+        }
+
         alunoRepository.deleteById(id);
     }
 
