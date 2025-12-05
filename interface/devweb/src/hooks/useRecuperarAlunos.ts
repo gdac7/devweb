@@ -8,10 +8,6 @@ export function useRecuperarAlunos() {
 
   const recuperarAlunos = async (): Promise<Aluno[]> => {
     const response = await fetchWithAuth(`${URL_BASE}${URL_ALUNOS}`)
-    if (!response.ok) {
-      const mensagem = await response.text()
-      throw new Error(mensagem || 'Erro ao carregar alunos')
-    }
     return await response.json()
   }
 

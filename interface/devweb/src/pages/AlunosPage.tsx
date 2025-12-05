@@ -2,9 +2,20 @@ import type { Aluno } from '../types'
 import { useRecuperarAlunos } from '../hooks/useRecuperarAlunos'
 import useRemoverAluno from '../hooks/useRemoverAluno'
 import useErrorStore from '../store/ErrorStore'
+import useSuccessStore from '../store/SuccessStore'
+import useTokenStore from '../store/TokenStore'
+import useLoginStore from '../store/LoginStore'
 import { ErrorAlert } from '../components/ErrorAlert'
+import { SuccessAlert } from '../components/SuccessAlert'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export function AlunosPage() {
+  const navigate = useNavigate()
+  const setTokenResponse = useTokenStore((s) => s.setTokenResponse)
+  const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido)
+  const setMsg = useLoginStore((s) => s.setMsg)
+
   const {
     data,
     isPending,
@@ -15,14 +26,36 @@ export function AlunosPage() {
   const { mutate: removerAluno, isPending: isRemovendoAluno } = useRemoverAluno()
   const setErrorMessage = useErrorStore((s) => s.setErrorMessage)
   const clearError = useErrorStore((s) => s.clearError)
+  const setSuccessMessage = useSuccessStore((s) => s.setSuccessMessage)
+  const clearSuccess = useSuccessStore((s) => s.clearSuccess)
+
+  useEffect(() => {
+    if (isError && error instanceof Error && error.message === 'UNAUTHORIZED') {
+      setLoginInvalido(true)
+      setMsg("Necessário estar logado para acessar este recurso.")
+      setTokenResponse({ token: "", idUsuario: 0, nome: "", role: "" })
+      navigate("/login", { state: { destino: "/alunos" } })
+    }
+  }, [isError, error])
 
   const handleRemover = (aluno: Aluno) => {
     if (confirm(`Tem certeza que deseja remover ${aluno.nome}?`)) {
       clearError()
+      clearSuccess()
       removerAluno(aluno.id, {
+        onSuccess: () => {
+          setSuccessMessage(`Aluno ${aluno.nome} removido com sucesso!`)
+        },
         onError: (error) => {
-          const mensagem = error instanceof Error ? error.message : 'Erro ao remover aluno'
-          setErrorMessage(mensagem)
+          if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+            setLoginInvalido(true)
+            setMsg("Necessário estar logado para acessar este recurso.")
+            setTokenResponse({ token: "", idUsuario: 0, nome: "", role: "" })
+            navigate("/login", { state: { destino: "/alunos" } })
+          } else {
+            const mensagem = error instanceof Error ? error.message : 'Erro ao remover aluno'
+            setErrorMessage(mensagem)
+          }
         },
       })
     }
@@ -68,6 +101,7 @@ export function AlunosPage() {
         </span>
       </div>
       <ErrorAlert />
+      <SuccessAlert />
       <div className="table-responsive">
         <table className="table table-striped table-hover align-middle">
           <thead>

@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import useTokenStore from '../store/TokenStore'
+import useLoginStore from '../store/LoginStore'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'nav-link active fw-semibold' : 'nav-link'
@@ -8,11 +9,17 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 export function NavBar() {
   const tokenResponse = useTokenStore((s) => s.tokenResponse)
   const setTokenResponse = useTokenStore((s) => s.setTokenResponse)
+  const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido)
+  const setMsg = useLoginStore((s) => s.setMsg)
+  const setIsLoggingOut = useLoginStore((s) => s.setIsLoggingOut)
   const navigate = useNavigate()
 
   const handleLogout = () => {
+    setIsLoggingOut(true)
+    setLoginInvalido(false)
+    setMsg("")
     setTokenResponse({ token: "", idUsuario: 0, nome: "", role: "" })
-    navigate("/login")
+    navigate("/login", { replace: true })
   }
 
   const isAuthenticated = tokenResponse.token !== ""
@@ -51,12 +58,20 @@ export function NavBar() {
                 </NavLink>
               </li>
               {isAdmin && (
-                <li className="nav-item">
-                  <NavLink to="/cadastrar-aluno" className={linkClass}>
-                    <i className="bi bi-person-plus me-2" />
-                    Cadastrar Aluno
-                  </NavLink>
-                </li>
+                <>
+                  <li className="nav-item">
+                    <NavLink to="/cadastrar-aluno" className={linkClass}>
+                      <i className="bi bi-person-plus me-2" />
+                      Cadastrar Aluno
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/gerenciar-usuarios" className={linkClass}>
+                      <i className="bi bi-person-gear me-2" />
+                      Gerenciar Usuários
+                    </NavLink>
+                  </li>
+                </>
               )}
               <li className="nav-item">
                 <NavLink to="/inscricao-alunos" className={linkClass}>

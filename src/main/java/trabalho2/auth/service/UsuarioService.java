@@ -1,6 +1,8 @@
 package trabalho2.auth.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,17 @@ public class UsuarioService {
         }
         catch(UsernameNotFoundException e) {
             usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-            usuario.setRole(Role.USER);
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            boolean isAdminAuthenticated = authentication != null &&
+                authentication.isAuthenticated() &&
+                authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+            if (!isAdminAuthenticated) {
+                usuario.setRole(Role.USER);
+            }
+
             usuarioRepository.save(usuario);
             return new InfoUsuario(true, false, "Usuário cadastrado com sucesso!");
         }

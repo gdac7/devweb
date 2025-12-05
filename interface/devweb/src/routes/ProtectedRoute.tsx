@@ -4,14 +4,11 @@ import useLoginStore from "../store/LoginStore";
 
 const ProtectedRoute = () => {
   const tokenResponse = useTokenStore((s) => s.tokenResponse);
-  const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido);
-  const setMsg = useLoginStore((s) => s.setMsg);
+  const isLoggingOut = useLoginStore((s) => s.isLoggingOut);
   const location = useLocation();
 
-  if (!tokenResponse.token) {
-    setLoginInvalido(true);
-    setMsg("Necessário estar logado para acessar este recurso.");
-    return <Navigate to="/login" state={{ destino: location.pathname }} replace />;
+  if (!tokenResponse.token && !isLoggingOut) {
+    return <Navigate to="/login" state={{ destino: location.pathname, needsAuth: true }} replace />;
   }
 
   return <Outlet />;

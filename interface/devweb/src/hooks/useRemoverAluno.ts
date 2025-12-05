@@ -7,14 +7,9 @@ const useRemoverAluno = () => {
   const { fetchWithAuth } = useFetchWithAuth()
 
   const removerAluno = async (id: number): Promise<void> => {
-    const response = await fetchWithAuth(`${URL_BASE}${URL_ALUNOS}/${id}`, {
+    await fetchWithAuth(`${URL_BASE}${URL_ALUNOS}/${id}`, {
       method: 'DELETE',
     })
-
-    if (!response.ok) {
-      const mensagem = await response.text()
-      throw new Error(mensagem || 'Erro ao remover aluno')
-    }
   }
 
   return useMutation({

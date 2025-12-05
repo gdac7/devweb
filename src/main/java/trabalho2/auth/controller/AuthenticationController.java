@@ -26,6 +26,12 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final UsuarioRepository usuarioRepository;
 
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtService jwtService, UsuarioRepository usuarioRepository) {
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.usuarioRepository = usuarioRepository;
+    }
+
     @PostMapping("login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody UsuarioLogin usuarioLogin,
                                                HttpServletResponse response) {

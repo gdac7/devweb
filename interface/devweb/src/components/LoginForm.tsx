@@ -28,18 +28,28 @@ const LoginForm = () => {
 
   const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido);
   const setMsg = useLoginStore((s) => s.setMsg);
+  const setIsLoggingOut = useLoginStore((s) => s.setIsLoggingOut);
 
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     setTokenResponse({ idUsuario: 0, token: "", nome: "", role: "" });
+    setIsLoggingOut(false);
+
+    if (location.state?.needsAuth) {
+      setLoginInvalido(true);
+      setMsg("Necessário estar logado para acessar este recurso.");
+    } else {
+      setLoginInvalido(false);
+      setMsg("");
+    }
 
     return () => {
       setLoginInvalido(false);
       setMsg("");
     };
-  }, []);
+  }, [location.state]);
 
   const { register, handleSubmit, formState: {errors} } = useForm<FormLogin>({resolver: zodResolver(schema)});
 
@@ -55,6 +65,8 @@ const LoginForm = () => {
           nome: tokenResp.nome,
           role: tokenResp.role,
         });
+        setLoginInvalido(false);
+        setMsg("");
         if (location.state?.destino) {
           navigate(location.state.destino);
         } else {

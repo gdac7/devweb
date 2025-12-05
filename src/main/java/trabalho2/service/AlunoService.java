@@ -1,5 +1,6 @@
 package trabalho2.service;
 import trabalho2.exception.EntidadeNaoEncontradaException;
+import trabalho2.exception.AlunoComInscricoesException;
 import trabalho2.model.Aluno;
 import org.springframework.stereotype.Service;
 import trabalho2.repository.AlunoRepository;
@@ -43,9 +44,8 @@ public class AlunoService {
         Aluno aluno = this.recuperarAluno(id);
 
         if (aluno.getInscricoes() != null && !aluno.getInscricoes().isEmpty()) {
-            throw new RuntimeException(
-                "Não é possível remover aluno com inscrições em turmas. " +
-                "Remova as inscrições primeiro."
+            throw new AlunoComInscricoesException(
+                "Não é possível remover aluno com inscrições."
             );
         }
 

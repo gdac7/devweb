@@ -3,11 +3,7 @@ import useLoginStore from "../store/LoginStore";
 import useTokenStore from "../store/TokenStore";
 
 const useFetchWithAuth = () => {
-  const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido);
-  const setMsg = useLoginStore((s) => s.setMsg);
   const tokenResponse = useTokenStore((s) => s.tokenResponse);
-  const setTokenResponse = useTokenStore((s) => s.setTokenResponse);
-  const navigate = useNavigate();
 
   const fetchWithAuth = async (url: string, options?: any) => {
     const token = tokenResponse.token;
@@ -25,24 +21,26 @@ const useFetchWithAuth = () => {
 
     const response = await fetch(url, { ...options });
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        setLoginInvalido(true);
-        setMsg("Necessário estar logado para acessar este recurso.");
-        setTokenResponse({ token: "", idUsuario: 0, nome: "", role: "" });
-        navigate("/login");
-      } else if (response.status === 403) {
-        throw new Error("Você não tem permissão para realizar esta ação.");
-      } else {
-        const error: any = await response.json().catch(() => ({}));
-        if (error) throw error;
-        else
-          throw new Error(
-            "Erro desconhecido: " + " - Status code: " + response.status
-          );
-      }
+    if (response.ok) {
+      return response;
     }
-    return response;
+
+    if (response.status === 401) {
+      throw new Error("UNAUTHORIZED");
+    }
+
+    if (response.status === 403) {
+      throw new Error("Você não tem permissão para realizar esta ação.");
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `Erro: ${response.status}`);
+    } else {
+      const textoErro = await response.text().catch(() => '');
+      throw new Error(textoErro || `Erro: ${response.status}`);
+    }
   };
 
   return { fetchWithAuth };

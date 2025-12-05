@@ -11,6 +11,7 @@ import AlunoPage from '../pages/AlunoPage'
 import InscricaoDeAlunosPage from '../pages/InscricaoDeAlunosPage'
 import LoginPage from '../pages/LoginPage'
 import CadastroUsuarioPage from '../pages/CadastroUsuarioPage'
+import GerenciarUsuariosPage from '../pages/GerenciarUsuariosPage'
 import ProtectedRoute from './ProtectedRoute'
 import AdminRoute from './AdminRoute'
 
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
             element: <AdminRoute />,
             children: [
               { path: '/cadastrar-aluno', element: <CadastroDeAlunosPage /> },
+              { path: '/gerenciar-usuarios', element: <GerenciarUsuariosPage /> },
             ],
           },
         ],
