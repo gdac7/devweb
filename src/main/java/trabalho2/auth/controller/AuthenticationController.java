@@ -17,7 +17,7 @@ import trabalho2.auth.service.JwtService;
 import trabalho2.auth.util.TokenResponse;
 import trabalho2.auth.util.UsuarioLogin;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @RestController
 @RequestMapping("autenticacao")
 public class AuthenticationController {

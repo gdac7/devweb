@@ -12,7 +12,7 @@ import trabalho2.auth.util.Role;
 @ToString
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
 @Entity
 public class Usuario {
     @Id
@@ -38,6 +38,10 @@ public class Usuario {
         this.email = email;
         this.senha = senha;
         this.role = role;
+    }
+
+    public Usuario() {
+
     }
 
     public Long getId() {

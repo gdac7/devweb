@@ -11,7 +11,7 @@ import trabalho2.auth.repository.UsuarioRepository;
 
 import java.util.Collections;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @Service
 public class UsuarioDetailsService implements UserDetailsService {
 

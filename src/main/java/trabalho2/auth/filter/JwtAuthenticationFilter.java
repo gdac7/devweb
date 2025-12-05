@@ -17,7 +17,7 @@ import trabalho2.auth.util.Role;
 import java.io.IOException;
 import java.util.List;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

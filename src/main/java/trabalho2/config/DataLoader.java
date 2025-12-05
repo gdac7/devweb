@@ -33,7 +33,7 @@ public class DataLoader {
             Usuario admin = new Usuario();
             admin.setNome("Administrador");
             admin.setEmail("admin@universidade.br");
-            admin.setSenha(passwordEncoder.encode("admin123"));
+            admin.setSenha(passwordEncoder.encode("password"));
             admin.setRole(Role.ADMIN);
 
             Usuario user = new Usuario();

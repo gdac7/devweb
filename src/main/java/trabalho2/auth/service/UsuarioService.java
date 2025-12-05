@@ -13,12 +13,17 @@ import trabalho2.auth.util.Role;
 
 import java.util.List;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public InfoUsuario cadastrarUsuario(Usuario usuario) {
         try {

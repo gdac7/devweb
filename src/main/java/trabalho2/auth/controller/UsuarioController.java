@@ -9,12 +9,16 @@ import trabalho2.auth.util.InfoUsuario;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RestController
 @RequestMapping("usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping
     public List<Usuario> recuperaUsuarios() {

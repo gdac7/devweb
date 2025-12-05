@@ -26,7 +26,7 @@ import trabalho2.auth.util.Role;
 
 import java.util.Arrays;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
